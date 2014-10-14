@@ -113,6 +113,11 @@ def FM0decode(bitTrain):
 	else:
 		return 0
 
+def formatBinString(binString):
+	binString += (8-len(binString)%8)*"0"
+	binString = ' '.join(re.findall(".{8}",binString))
+	return binString
+
 # Importation du .wav dans une liste de BYTES
 signal = readSignalInWavFile(FILE)	
 signal = threshold(signal,8000)
@@ -124,10 +129,11 @@ signal = clearOnes(signal)
 # Récupération des bits bruts et décodage
 #signal = getBits_stringMatcher(signal)
 signal = getBits_resampler(signal)
-print "Bits bruts: " + str(signal) 
+print "Bits bruts: \n" + str(signal) 
 signal = FM0decode(signal)
+formattedSignal = formatBinString(signal)
 print
-print "Bits décodés: " + str(signal)
+print "Bits décodés: \n" + str(formattedSignal)
 print 
-print "Hexa: " +hex(int(str(signal),2))
+print "Hexa: \n" +hex(int(str(signal) + (4-len(signal)%4)*"0",2))
 print
