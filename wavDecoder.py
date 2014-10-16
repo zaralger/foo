@@ -91,15 +91,43 @@ def getFrame(bitTrain):
 		print "No more frame found !"
 		return bitTrain, 0
 
+def getDecoDico(codeRef):
+	code = {}
+
+	decoDicoFM0 = {}
+	decoDicoFM0["01"]=0
+	decoDicoFM0["10"]=0
+	decoDicoFM0["11"]=1
+	decoDicoFM0["00"]=1
+	code["FM0"] = decoDicoFM0
+
+	decoDicoNRZ = {}
+	decoDicoNRZ["1"]=1
+	decoDicoNRZ["0"]=0
+	code["NRZ"] = decoDicoNRZ
+
+	decoDicoNRZi = {}
+	decoDicoNRZi["1"]=0
+	decoDicoNRZi["0"]=1
+	code["NRZi"] = decoDicoNRZi
+
+	#as per G.E. Thomas
+	decoDicoManchester = {}
+	decoDicoManchester["10"]=1
+	decoDicoManchester["01"]=0
+	code["Manchester"] = decoDicoManchester
+
+	#as per IEEE 802.3
+	decoDicoManchesterI = {}
+	decoDicoManchesterI["10"]=0
+	decoDicoManchesterI["01"]=1
+	code["ManchesterI"] = decoDicoManchesterI
+
+	return code[codeRef]
+
 # bitTrain : avant découpage par frame
 # bitFrame : frame découpée
-def FM0decode(bitTrain):
-	decoDico = {}
-	decoDico["01"]=0
-	decoDico["10"]=0
-	decoDico["11"]=1
-	decoDico["00"]=1
-
+def decode(bitTrain,decoDico):
 	bitTrain, bitFrame = getFrame(bitTrain)
 
 	if bitFrame != 0:
@@ -130,7 +158,7 @@ signal = clearOnes(signal)
 #signal = getBits_stringMatcher(signal)
 signal = getBits_resampler(signal)
 print "Bits bruts: \n" + str(signal) 
-signal = FM0decode(signal)
+signal = decode(signal,getDecoDico("FM0"))
 formattedSignal = formatBinString(signal)
 print
 print "Bits décodés: \n" + str(formattedSignal)
